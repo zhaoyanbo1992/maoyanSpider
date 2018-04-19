@@ -24,6 +24,7 @@ class MaoyanComSpider(CrawlSpider):
         print movies
         # from scrapy.shell import inspect_response
         # inspect_response(response, self)
+
         for movie in movies:
             print movie
 
