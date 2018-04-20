@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import re
+
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 
@@ -12,25 +12,16 @@ from maoyanCrawl.items import MovieListItem, MovieInfoItem
 # from scrapy.utils.log import configure_logging
 
 
-class MaoyanComSpider(scrapy.Spider):
+class MaoyanComSpider(CrawlSpider):
     name = 'maoyan.com'
     allowed_domains = ['maoyan.com']
     start_urls = ['http://maoyan.com/films?offset=0']
 
-    # rules = (
-    #     Rule(LinkExtractor(allow=r'/films?offset=\d+'), callback='parse_movie_list', follow=True),
-    # )
+    rules = (
+        Rule(LinkExtractor(allow=r'\?offset=\d+'), callback='parse_movie_list', follow=True),
+    )
 
-    # def parse_movie_list(self, response):
-    #     movies = response.xpath(".//div[@class='movie-list']/dl/dd")
-    #     print movies
-    #     # from scrapy.shell import inspect_response
-    #     # inspect_response(response, self)
-    #
-    #     for movie in movies:
-    #         print movie
-
-    def parse(self, response):
+    def parse_movie_list(self, response):
         '''
         解析列表
         :param response:
@@ -45,12 +36,18 @@ class MaoyanComSpider(scrapy.Spider):
             movieLink = movie.xpath("./div[@class='movie-item']/a/@href").extract_first()
             movieImgLink = movie.xpath("./div[@class='movie-item']/a/div/img[2]/@data-src").extract_first()
             movieName = movie.xpath("./div[position()=2]/a/text()").extract_first()
+            ms = movie.xpath(".//div[@class='channel-detail channel-detail-orange']")
+            if len(ms) > 1:
+                movieScore = ms.xpath(".//i[1]/text()").extract_first() + ms.xpath(".//i[2]/text()").extract_first()
+            else:
+                movieScore = ms.xpath(".//i[1]/text()").extract_first()
 
             movieListItem = MovieListItem(movieId=movieId, movieLink=movieLink, movieImgLink=movieImgLink,
                                           movieName=movieName)
             yield movieListItem
             request = scrapy.Request(url='http://maoyan.com' + movieLink, callback=self.parse_movie_detail)
             request.meta['movieId'] = movieId
+            request.meta['movieScore'] = movieScore
             yield request
 
     def parse_movie_detail(self, response):
@@ -64,15 +61,12 @@ class MaoyanComSpider(scrapy.Spider):
         movieArea = response.xpath(".//li[@class='ellipsis'][2]/text()").extract_first().split('/')[0]
         moviePTime = response.xpath(".//li[@class='ellipsis'][2]/text()").extract_first().split('/')[1]
         movieRelDate = response.xpath(".//li[@class='ellipsis'][3]/text()").extract_first()
-        movieBoxOffice = response.xpath(
-            ".//div[@class='movie-index-content box']/span[1]/text()").extract_first() + response.xpath(
-            ".//div[@class='movie-index-content box']/span[2]/text()").extract_first()
+
         movieBrief = response.xpath(".//div[@class='mod-content']/span/text()").extract_first()
-        movieScore = response.xpath(
-            ".//div[@class='movie-index-content score normal-score']/span/text()").extract_first()
+        movieScore = response.meta['movieScore']
 
         movieInfoItem = MovieInfoItem(movieId=movieId, movieType=movieType, movieArea=movieArea,
-                                      moviePTime=moviePTime, movieRelDate=movieRelDate, movieBoxOffice=movieBoxOffice,
+                                      moviePTime=moviePTime, movieRelDate=movieRelDate, movieBoxOffice="暂无",
                                       movieBrief=movieBrief, movieScore=movieScore)
         yield movieInfoItem
 

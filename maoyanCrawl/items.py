@@ -17,7 +17,7 @@ class MovieListItem(scrapy.Item):
 
 class MovieInfoItem(scrapy.Item):
     movieId = scrapy.Field()
-    movieType = scrapy.Item()
+    movieType = scrapy.Field()
     movieScore = scrapy.Field()
     movieArea = scrapy.Field()
     moviePTime = scrapy.Field()
