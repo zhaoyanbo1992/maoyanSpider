@@ -23,13 +23,13 @@ NEWSPIDER_MODULE = 'maoyanCrawl.spiders'
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-# DOWNLOAD_DELAY=3
+DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN=16
 # CONCURRENT_REQUESTS_PER_IP=16
 
 # Disable cookies (enabled by default)
-# COOKIES_ENABLED=False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 # TELNETCONSOLE_ENABLED=False
@@ -57,7 +57,7 @@ DEFAULT_REQUEST_HEADERS = {
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'maoyanCrawl.middlewares.RandomUserAgent.RandomUserAgent': 543,
-    'maoyanCrawl.middlewares.RandomProxy.RandomProxy': None,
+    'maoyanCrawl.middlewares.RandomProxy.RandomProxy': 700,
 }
 
 # Enable or disable extensions
@@ -81,7 +81,7 @@ AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies
 AUTOTHROTTLE_MAX_DELAY = 60
 # Enable showing throttling stats for every response received:
-# AUTOTHROTTLE_DEBUG=False
+# AUTOTHROTTLE_DEBUG = False
 
 # Enable and configure HTTP caching (disabled by default)
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
@@ -150,4 +150,6 @@ REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
 
 # 代理服务器
-# HTTP_PROXY = 'http://127.0.0.1:9999'
+HTTP_PROXY = 'http://120.79.64.64:80'
+
+# HTTPERROR_ALLOWED_CODES = [404]
