@@ -37,10 +37,10 @@ class MaoyanComSpider(CrawlSpider):
             movieImgLink = movie.xpath("./div[@class='movie-item']/a/div/img[2]/@data-src").extract_first()
             movieName = movie.xpath("./div[position()=2]/a/text()").extract_first()
             ms = movie.xpath(".//div[@class='channel-detail channel-detail-orange']")
-            if len(ms) > 1:
+            try:
                 movieScore = ms.xpath(".//i[1]/text()").extract_first() + ms.xpath(".//i[2]/text()").extract_first()
-            else:
-                movieScore = ms.xpath(".//i[1]/text()").extract_first()
+            except Exception, e:
+                movieScore = ms.xpath("./text()").extract_first()
 
             movieListItem = MovieListItem(movieId=movieId, movieLink=movieLink, movieImgLink=movieImgLink,
                                           movieName=movieName)
@@ -59,7 +59,10 @@ class MaoyanComSpider(CrawlSpider):
         movieId = response.meta['movieId']
         movieType = response.xpath(".//li[@class='ellipsis'][1]/text()").extract_first()
         movieArea = response.xpath(".//li[@class='ellipsis'][2]/text()").extract_first().split('/')[0]
-        moviePTime = response.xpath(".//li[@class='ellipsis'][2]/text()").extract_first().split('/')[1]
+        try:
+            moviePTime = response.xpath(".//li[@class='ellipsis'][2]/text()").extract_first().split('/')[1]
+        except Exception, e:
+            moviePTime = ''
         movieRelDate = response.xpath(".//li[@class='ellipsis'][3]/text()").extract_first()
 
         movieBrief = response.xpath(".//div[@class='mod-content']/span/text()").extract_first()

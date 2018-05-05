@@ -60,13 +60,13 @@ class MaoyancrawlPipeline(object):
         match = pattern.search(item['movieId'])
         item['movieId'] = match.group() if match else item['movieId']
 
-        item['movieType'] = item['movieType'].strip()
+        item['movieType'] = item['movieType'].strip() if item['movieType'] else item['movieType']
 
-        item['movieArea'] = item['movieArea'].strip()
+        item['movieArea'] = item['movieArea'].strip() if item['movieArea'] else item['movieArea']
 
         match = pattern.search(item['moviePTime'])
         item['moviePTime'] = match.group() if match else item['moviePTime']
 
-        item['movieRelDate'] = item['movieRelDate'].strip()
+        item['movieRelDate'] = item['movieRelDate'].strip() if item['movieRelDate'] else item['movieRelDate']
 
         self.db.movieInfo.insert(dict(item))

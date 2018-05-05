@@ -1,11 +1,6 @@
-# coding-utf-8
+# coding:utf-8
 
 import random
-
-'''
-这个类用于生成随机代理
-'''
-
 
 class RandomProxy(object):
     def __init__(self, http_proxy):
